@@ -1,39 +1,103 @@
+<!DOCTYPE html>
 <html>
-<headd>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
-          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
 
         var characters = [' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
             'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+        var plainText;
+        var key;
+        var map1 = {};
+        var map2 = {};
         $(function () {
-            console.log(characters);
             $("#encrypt").on("click", function () {
-                    var isPlainText = checkPlainText($("#plainText").val())
+                    var plainText = $("#plainText").val();
+
+                    console.log("Text=", plainText);
+                    var isPlainText = checkPlainText(plainText)
+                    key = $("#key1").val();
+                    var isKeyText = checkKey(key);
 
 
+                    for (var i = 0; i < characters.length; i++) {
+                        map1[characters[i]] = key[i];
+
+                    }
+                    //console.log('map=', map1);
+                    encrypt(plainText);
                 }
             );
+            $("#decrypt").on("click", function () {
+                key = $("#key2").val();
+                console.log("Decrypt key", key);
+                var cypherText = $("#cypherText").val();
+                console.log("cypher text=", cypherText);
+                for (var i = 0; i < characters.length; i++) {
+                    map2[key[i]] = characters[i];
+
+                }
+                console.log("MAP2=",map2);
+                decrypt(cypherText);
+
+
+            });
+
             function checkPlainText(x) {
                 console.log(x);
+                return true;
+            }
+
+            function encrypt(x) {
+                var cypherText = '';
+                for (var i = 0; i < x.length; i++) {
+                    cypherText += map1[x[i]];
+                }
+                console.log("cypherText=", cypherText);
+                $("#result").text(cypherText.toUpperCase());
+
+
+            }
+
+            function decrypt(y) {
+                var plainText = '';
+                for (var i = 0; i < y.length; i++) {
+                    plainText += map2[y[i]];
+                }
+                console.log("Y=", y);
+                console.log("decrypText=", plainText);
+                $("#decryption").text(plainText.toLowerCase());
+
+
+            }
+
+            function checkKey(key) {
                 return true;
             }
         });
 
     </script>
 
-</headd>
+</head>
 <body>
 <div class="row" style="margin: 15px">
     <input type="text" id="plainText" placeholder="enter plain text...">
     <input type="text" id="key1" placeholder="Key">
     <input class="btn btn-primary" type="button" id="encrypt" value="Encrypt">
+
 </div>
 <div class="row" style="margin: 15px">
-    <input type="text" id="cypherText" placeholder="enter plain text...">
+    <input type="text" id="cypherText" placeholder="enter cypher text...">
     <input type="text" id="key2" placeholder="Key">
     <input class="btn btn-success" type="button" id="decrypt" value="Decrypt">
+</div>
+<div id="result" class="label label-primary" style="font-size: 150%">
+    Result:
+</div>
+<div id="decryption" class="label label-success" style="font-size: 150%">
+    Decryption:
 </div>
 
 
