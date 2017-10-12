@@ -8,25 +8,44 @@
 
         var characters = [' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
             'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-        var plainText;
+        var errorMessage = '<div class="alert alert-danger">' +
+            '        <strong>Invalid Data! </strong></div>';
+
         var key;
         var map1 = {};
         var map2 = {};
         $(function () {
             $("#encrypt").on("click", function () {
                     var plainText = $("#plainText").val();
+                    var key = $("#key1").val();
 
                     console.log("Text=", plainText);
                     var isPlainText = checkPlainText(plainText)
-                    key = $("#key1").val();
-                    var isKeyText = checkKey(key);
+                    if (!isPlainText) {
+                        var currentErrorMsj = errorMessage;
+                        errorMessage += 'invalid plain text only english is valid';
+                        $("#errorHandling").html("");
+                        $("#errorHandling").append(errorMessage);
+                        return;
+                    }
+                    if (plainText == undefined || key == undefined) {
+                        errorMessage += 'both fields are requiered';
+                        $("#errorHandling").html("");
+                        $("#errorHandling").append(errorMessage);
+                        return;
+                    }
+                    if (!checkKey(key)) {
+                        errorMessage += 'key must have 27 characters';
+                        $("#errorHandling").html("");
+                        $("#errorHandling").append(errorMessage);
+                        return;
+                    }
 
 
                     for (var i = 0; i < characters.length; i++) {
                         map1[characters[i]] = key[i];
 
                     }
-                    //console.log('map=', map1);
                     encrypt(plainText);
                 }
             );
@@ -34,23 +53,44 @@
                 key = $("#key2").val();
                 console.log("Decrypt key", key);
                 var cypherText = $("#cypherText").val();
+                if (cypherText == undefined || key == undefined) {
+                    $("#errorHandling").empty();
+                    $("#errorHandling").append(errorMessage);
+                    return;
+                }
+                if (!checkKey(key)) {
+                    $("#errorHandling").empty();
+                    $("#errorHandling").append(errorMessage);
+                    return;
+                }
+
                 console.log("cypher text=", cypherText);
                 for (var i = 0; i < characters.length; i++) {
                     map2[key[i]] = characters[i];
 
                 }
-                console.log("MAP2=",map2);
+                console.log("MAP2=", map2);
                 decrypt(cypherText);
 
 
             });
 
-            function checkPlainText(x) {
+            function checkPlainText(aux) {
+                console.log("check")
+                x = aux.toLowerCase();
+                console.log("X de verificat", x);
+                var bool = true;
+                for (var i = 0; i < x.length; i++) {
+                    if (!characters.includes(x[i])) {
+                        bool = false;
+                    }
+                }
                 console.log(x);
-                return true;
+                return bool;
             }
 
-            function encrypt(x) {
+            function encrypt(aux) {
+                x = aux.toLowerCase();
                 var cypherText = '';
                 for (var i = 0; i < x.length; i++) {
                     cypherText += map1[x[i]];
@@ -62,18 +102,21 @@
             }
 
             function decrypt(y) {
-                var plainText = '';
-                for (var i = 0; i < y.length; i++) {
-                    plainText += map2[y[i]];
+                var aux = y.toLowerCase();
+                var newPlainText = '';
+                for (var i = 0; i < aux.length; i++) {
+                    newPlainText += map2[aux[i]];
+                    console.log("Corespondent =", map2[aux[i]], " cypher character=", aux[i]);
                 }
                 console.log("Y=", y);
-                console.log("decrypText=", plainText);
-                $("#decryption").text(plainText.toLowerCase());
-
+                console.log("decrypText=", newPlainText);
+                $("#decryption").text(newPlainText.toLowerCase());
 
             }
 
             function checkKey(key) {
+                if (key.length < 27)
+                    return false;
                 return true;
             }
         });
@@ -100,7 +143,10 @@
     Decryption:
 </div>
 
+<div id="errorHandling" style="margin: 15px">
 
+
+</div>
 </body>
 
 </html>
