@@ -15,29 +15,35 @@
         var map1 = {};
         var map2 = {};
         $(function () {
+            $("#errorHandling").hide();
             $("#encrypt").on("click", function () {
                     var plainText = $("#plainText").val();
                     var key = $("#key1").val();
+                    console.log("valori=", plainText, key);
 
                     console.log("Text=", plainText);
                     var isPlainText = checkPlainText(plainText)
-                    if (!isPlainText) {
+                    var isKey = checkPlainText(key)
+                    if (!isPlainText || !isKey) {
                         var currentErrorMsj = errorMessage;
-                        errorMessage += 'invalid plain text only english is valid';
-                        $("#errorHandling").html("");
-                        $("#errorHandling").append(errorMessage);
+                        errorMessage += 'invalid characters only english chars are valid and space';
+                        $("#errorHandling div").empty();
+                        $("#errorHandling").html(errorMessage);
+                        $("#errorHandling").show();
                         return;
                     }
-                    if (plainText == undefined || key == undefined) {
+                    if (typeof plainText == undefined || typeof key == undefined) {
                         errorMessage += 'both fields are requiered';
-                        $("#errorHandling").html("");
-                        $("#errorHandling").append(errorMessage);
+                        $("#errorHandling div").empty();
+                        $("#errorHandling").html(errorMessage);
+                        $("#errorHandling").show();
                         return;
                     }
                     if (!checkKey(key)) {
                         errorMessage += 'key must have 27 characters';
-                        $("#errorHandling").html("");
-                        $("#errorHandling").append(errorMessage);
+                        $("#errorHandling div").empty();
+                        $("#errorHandling").html(errorMessage);
+                        $("#errorHandling").show();
                         return;
                     }
 
@@ -46,21 +52,36 @@
                         map1[characters[i]] = key[i];
 
                     }
+                    $("#errorHandling").hide();
                     encrypt(plainText);
                 }
             );
             $("#decrypt").on("click", function () {
-                key = $("#key2").val();
+                var key = $("#key2").val();
                 console.log("Decrypt key", key);
                 var cypherText = $("#cypherText").val();
-                if (cypherText == undefined || key == undefined) {
+                var isKey = checkPlainText(key);
+                var isPlainText = checkPlainText(cypherText);
+                if (!isPlainText || !isKey) {
+                    var currentErrorMsj = errorMessage;
+                    errorMessage += 'invalid characters only english chars are valid and space';
                     $("#errorHandling").empty();
-                    $("#errorHandling").append(errorMessage);
+                    $("#errorHandling").html(errorMessage);
+                    $("#errorHandling").show();
+                    return;
+                }
+                if (cypherText == undefined || key == undefined) {
+                    errorMessage += 'both fields are requiered';
+                    $("#errorHandling").empty();
+                    $("#errorHandling").html(errorMessage);
+                    $("#errorHandling").show();
                     return;
                 }
                 if (!checkKey(key)) {
+                    errorMessage += 'key must have 27 characters';
                     $("#errorHandling").empty();
-                    $("#errorHandling").append(errorMessage);
+                    $("#errorHandling").html(errorMessage);
+                    $("#errorHandling").show();
                     return;
                 }
 
@@ -70,6 +91,7 @@
 
                 }
                 console.log("MAP2=", map2);
+                $("#errorHandling").hide();
                 decrypt(cypherText);
 
 
@@ -143,7 +165,8 @@
     Decryption:
 </div>
 
-<div id="errorHandling" style="margin: 15px">
+<div id="errorHandling" style="margin: 15px" class="alert alert-danger">
+    <strong>Invalid Data! </strong>
 
 
 </div>
