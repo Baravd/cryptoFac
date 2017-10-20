@@ -40,7 +40,7 @@
                         return;
                     }
                     if (!checkKey(key)) {
-                        errorMessage += 'key must have 27 characters';
+                        errorMessage += 'key must have 27 characters and diff';
                         $("#errorHandling div").empty();
                         $("#errorHandling").html(errorMessage);
                         $("#errorHandling").show();
@@ -78,7 +78,7 @@
                     return;
                 }
                 if (!checkKey(key)) {
-                    errorMessage += 'key must have 27 characters';
+                    errorMessage += 'key must have 27 characters and diff';
                     $("#errorHandling").empty();
                     $("#errorHandling").html(errorMessage);
                     $("#errorHandling").show();
@@ -137,8 +137,20 @@
             }
 
             function checkKey(key) {
+                console.log("check key!!!!!!!!");
                 if (key.length < 27)
                     return false;
+                for (var i = 0; i < characters.length; i++) {
+                    var count = 0;
+                    for (var j = 0; j < key.length; j++) {
+                        if (characters[i] == key[i]) {
+                            count++;
+                        }
+                    }
+                    if (count > 1)
+                        return false;
+
+                }
                 return true;
             }
         });
